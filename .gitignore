@@ -1,0 +1,23 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pip
+
+# rasa app 
+rasa_app/*
+!rasa_app/.keep
+
+# action server
+actions_app/*
+!actions_app/__init__.py
+
+# action server
+models/*
+!models/.keep
+
+# env file 
+.env
+
+# docker override 
+docker-compose.override.yml

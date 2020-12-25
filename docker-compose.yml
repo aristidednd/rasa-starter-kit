@@ -1,0 +1,50 @@
+version: "3.4"
+
+x-duckling-credentials: &duckling-credentials
+  RASA_DUCKLING_HTTP_URL: "http://duckling:8000"
+
+x-rasa-credentials: &rasa-credentials
+  RASA_ACTION_SERVER: "http://rasa-actions:5055"
+
+services:
+  rasa:
+    image: "rasa/rasa:${RASA_VERSION}-full"
+    container_name: rasa
+    user: root
+    command: run --enable-api
+    volumes:
+      - ./rasa_entrypoint.sh:/app/entrypoint.sh
+      - ./rasa_app/requirements.txt:/app/requirements.txt
+      - ./rasa_app/data:/app/data
+      - ./rasa_app/config.yml:/app/config.yml
+      - ./rasa_app/domain.yml:/app/domain.yml
+      - ./rasa_app/tests:/app/tests
+      - ./credentials.yml:/app/credentials.yml
+      - ./endpoints.yml:/app/endpoints.yml
+      - ./models:/app/models
+    entrypoint: /app/entrypoint.sh
+    environment:
+      <<: *rasa-credentials
+      <<: *duckling-credentials
+    ports:
+      - "5005:5005"
+    depends_on:
+      - duckling
+      - rasa-actions
+
+  rasa-actions:
+    image: "rasa/rasa-sdk:${RASA_SDK_VERSION}"
+    container_name: rasa-actions
+    user: root
+    volumes:
+      - ./actions_app:/app/actions
+      - ./actions_entrypoint.sh:/app/entrypoint.sh
+    expose:
+      - "5055"
+
+  duckling:
+    image: "rasa/duckling:0.1.6.3"
+    container_name: duckling
+    expose:
+      - "8000"
+    command: ["duckling-example-exe", "--no-access-log", "--no-error-log"]

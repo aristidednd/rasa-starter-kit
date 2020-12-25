@@ -1,0 +1,59 @@
+#!/bin/bash
+
+function os() {
+    platform=""
+    case "$OSTYPE" in
+        solaris*) platform="SOLARIS" ;;
+        darwin*)  platform="OSX" ;; 
+        linux*)   platform="LINUX" ;;
+        bsd*)     platform="BSD" ;;
+        msys*)    platform="WINDOWS" ;;
+        *)        platform="unknown: $OSTYPE" ;;
+    esac
+    echo "$platform"
+}
+
+function container_args (){
+    if [ "$#" -lt 1 ] ; then 
+        echo "no"
+    else
+        echo ""
+    fi 
+}
+
+function entrypoint () {
+    if [[ "$1" == 'rasa' ]]; then 
+        echo "rasa"
+    else 
+        echo ""
+    fi
+}
+
+function run () {
+    container=$1
+    platform=$(os)
+    shift
+    args=$(container_args $@)
+    entry=$(entrypoint $container)
+    if [[ $platform == 'WINDOWS' ]]; then
+        if [[ $args == 'no' ]]; then
+            winpty docker exec -it "$container" bash
+        else
+            winpty docker exec -it "$container" bash -c "$entry $*"
+        fi
+    else
+        if [[ $args == 'no' ]]; then
+            docker exec -it "$container" bash
+        else
+            docker exec -it "$container" bash -c "$entry $*"
+        fi
+    fi
+}
+
+if [[ "$1" == 'actions' ]]; then
+    shift
+    run rasa-actions "$@"
+elif [[ "$1" == 'rasa' ]]; then
+    shift
+    run rasa "$@"
+fi
