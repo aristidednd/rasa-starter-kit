@@ -1,0 +1,64 @@
+intents:
+  - greet
+  - goodbye
+  - book_a_place
+  - cuisine
+  - num_people
+  - affirm
+  - deny
+  - preferences
+
+entities:
+ - cuisine
+ - num_people
+ - seatings
+ - preferences
+ - number
+
+slots:
+  cuisine:
+    type: unfeaturized
+    auto_fill: false
+  num_people:
+    type: unfeaturized
+    auto_fill: false
+  outdoor_seating:
+    type: unfeaturized
+    auto_fill: false
+  preferences:
+    type: unfeaturized
+    auto_fill: false
+
+forms:
+  - booking_form
+
+responses:
+  utter_default:
+    - text: "Désolé, je ne vous ai pas compris, essayez de saisir autre chose"
+  utter_greet:
+    - text: "Bonjour,\n
+            Je suis votre assistant.\n
+            Je suis là pour vous aider à faire votre réservation."
+  utter_see_you_soon:
+    - text: "A très bientôt"
+  utter_ask_cuisine:
+    - text: "Quelle cuisine?"
+  utter_ask_num_people:
+    - text: "Pour combien de personnes"
+  utter_ask_outdoor_seating:
+    - text: "Voulez-vous des places assises à l’extérieur?"
+  utter_ask_preferences:
+    - text: "Quelles sont vos préférences"
+  utter_acknowledge_informations:
+    - text: "C'est noté"
+  utter_summarize_booking:
+    - text: "Votre réservation a été enregistrée pour:\n
+            - cuisine: {cuisine}\n
+            - nbr personnes: {num_people}\n
+            - places assises: {outdoor_seating}\n
+            - preferences: {preferences}"
+
+actions:
+  - action_custom
+
+

@@ -1,0 +1,33 @@
+language: fr
+pipeline:
+  - name: WhitespaceTokenizer
+  - name: RegexFeaturizer
+  - name: LexicalSyntacticFeaturizer
+  - name: CountVectorsFeaturizer
+  - name: CountVectorsFeaturizer
+    analyzer: "char_wb"
+    min_ngram: 1
+    max_ngram: 4
+  - name: DIETClassifier
+    epochs: 100
+  - name: EntitySynonymMapper
+  - name: DucklingHTTPExtractor
+    url: ${RASA_DUCKLING_HTTP_URL}
+    locale: "fr_FR"
+    dimensions:
+    - amount-of-money
+    - time
+    - number
+  - name: "SpacyNLP"
+    model: "fr_core_news_md"
+  - name: "SpacyEntityExtractor"
+    dimensions: ["PERSON"]
+
+policies:
+- name: FallbackPolicy
+  nlu_threshold: 0.75
+- name: AugmentedMemoizationPolicy
+- name: FormPolicy
+- name: MappingPolicy
+- name: TEDPolicy
+  epochs: 20
